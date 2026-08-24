@@ -1,0 +1,49 @@
+# Devin 環境 Blueprint のサンプル
+#
+# このファイル自体が自動で読み込まれるわけではありません。
+# Devin の Settings > Environment（リポジトリ単位）に、この内容を貼り付けて使います。
+# セッション内の Devin に「blueprint.yaml の内容で環境設定を提案して」と頼めば、
+# 承認付きの変更提案として出せます。
+
+initialize: |
+  # スナップショット作成時に一度だけ実行される。
+  # 依存はここで入れておくと、セッション開始時に待ち時間がなくなる。
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  cd ~/repos/devin-harness-demo
+  uv sync --extra dev
+
+maintenance: |
+  # 定期的なスナップショット更新時に実行される。
+  export PATH="$HOME/.local/bin:$PATH"
+  cd ~/repos/devin-harness-demo
+  git pull --ff-only
+  uv sync --extra dev
+  uv run pytest -q
+
+knowledge:
+  - name: lint
+    contents: |
+      uv run ruff check .
+      uv run ruff format --check .
+  - name: test
+    contents: |
+      uv run pytest -q
+  - name: startup
+    contents: |
+      uv run uvicorn sensor_analytics.api:app --port 8000
+  - name: notes
+    contents: |
+      パッケージ管理は uv。pip は使わない。
+      サンプルデータは同梱なので、外部接続なしで全テストが通る。
+      実データを使う場合の資格情報は Secrets 経由で参照する。
+
+# 顧客環境で実行する場合の追記例（Outposts を使うケース）
+#
+# - ライセンスが必要なツール（MATLAB など）や、社外に出せないデータを扱う場合は、
+#   顧客が管理するマシンでワーカーを動かす構成にする。
+#   推論と計画は Devin Cloud、コマンド実行とファイル操作は顧客側マシン。
+# - ワーカー側に必要なのは外向き HTTPS のみ。着信ポートや VPN トンネルは不要。
+# - 起動例: devin worker start --outpost=<outpost_name>
+# - この構成は環境ごとの確認が必要なので、デモでは「こう組める」までにして、
+#   実際に動かすかはお客様の環境確認後に決める。
