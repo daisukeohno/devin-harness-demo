@@ -21,9 +21,12 @@ def health() -> dict[str, str]:
 
 
 @app.get("/devices")
-def devices() -> dict[str, list[str]]:
+def devices(prefix: str | None = None) -> dict[str, list[str]]:
     frame = read_readings()
-    return {"devices": sorted(frame["device_id"].unique().tolist())}
+    device_ids = frame["device_id"].unique().tolist()
+    if prefix is not None:
+        device_ids = [device_id for device_id in device_ids if device_id.startswith(prefix)]
+    return {"devices": sorted(device_ids)}
 
 
 @app.get("/summary")

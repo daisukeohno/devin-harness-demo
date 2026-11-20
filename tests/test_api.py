@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from sensor_analytics.api import app
@@ -10,7 +11,24 @@ def test_health():
 
 
 def test_devices_lists_sample_devices():
-    assert client.get("/devices").json()["devices"] == ["dev-001", "dev-002"]
+    response = client.get("/devices")
+    assert response.status_code == 200
+    assert response.json() == {"devices": ["dev-001", "dev-002"]}
+
+
+@pytest.mark.parametrize(
+    ("prefix", "expected"),
+    [
+        ("dev-001", ["dev-001"]),
+        ("dev-00", ["dev-001", "dev-002"]),
+        ("dev-999", []),
+        ("DEV-001", []),
+    ],
+)
+def test_devices_filters_by_prefix(prefix, expected):
+    response = client.get("/devices", params={"prefix": prefix})
+    assert response.status_code == 200
+    assert response.json() == {"devices": expected}
 
 
 def test_summary_returns_three_signals():
