@@ -12,6 +12,7 @@
    | チャンネル | [#devin-demo-bots](https://app.slack.com/archives/C0CJJ79MDV1) |
    | メッセージ本文 | `[ONCALL-DEMO-SENSOR]` を含む |
    | 送信元 | Human |
+   | 投稿者（User） | デモ担当者本人の Slack アカウント（等しい） |
    | スレッド内の返信 | 含めない |
 
 3. **Run as** の実行主体に対象リポジトリの閲覧権限と対象チャンネルへのアクセスがあることを確認します。必要な連携は Slack と GitHub のみ。Datadog、PagerDuty、Teams は変更しません。
@@ -34,7 +35,7 @@ uv run uvicorn sensor_analytics.api:app --host 127.0.0.1 --port 8000
    uv run python -m sensor_analytics.oncall_demo --profile drift
    ```
 
-   出力全体を [#devin-demo-bots](https://app.slack.com/archives/C0CJJ79MDV1) に**人のアカウントで新規投稿**します。コードブロックにせず、そのまま貼り付けてください。監視サービスが Slack に通知した想定です。
+   出力全体を [#devin-demo-bots](https://app.slack.com/archives/C0CJJ79MDV1) に**起動条件で指定したデモ担当者のアカウントで新規投稿**します。コードブロックにせず、そのまま貼り付けてください。監視サービスが Slack に通知した想定です。
 2. **調査：** Slack の元スレッドと、Oncall → Responders → デモ用 Responder の調査結果を開きます。次の切り分けができていることを確認します。
    - **観測事実：** `GET /ready` は HTTP 404、対照の `GET /health` は HTTP 200。
    - **コードとの照合：** FastAPI が公開する生存確認ルートは `/health`。監視対象のパスが合っていません。
