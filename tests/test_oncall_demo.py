@@ -1,13 +1,17 @@
 import pytest
+from fastapi.testclient import TestClient
 
 from sensor_analytics import oncall_demo
+from sensor_analytics.api import app
 
 
 def test_drift_prints_alert_with_observed_statuses(monkeypatch, capsys):
-    responses = {"/ready": 404, "/health": 200}
-    monkeypatch.setattr(oncall_demo, "status_for", lambda port, path: responses[path])
+    with TestClient(app) as client:
+        monkeypatch.setattr(
+            oncall_demo, "status_for", lambda port, path: client.get(path).status_code
+        )
 
-    assert oncall_demo.main(["--profile", "drift"]) == 0
+        assert oncall_demo.main(["--profile", "drift"]) == 0
     output = capsys.readouterr().out
     assert output.startswith("[ONCALL-DEMO-SENSOR]")
     assert "GET /ready → HTTP 404" in output
