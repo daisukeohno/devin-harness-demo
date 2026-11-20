@@ -22,10 +22,10 @@
 
 ## リハーサルと当日の進行
 
-このリポジトリのルートで API を起動します。事前に Git、Python 3.10 以上、uv を用意してください。
+このリポジトリのルートで API を起動します。事前に Git、CI と同じ Python 3.12、uv を用意してください。
 
 ```bash
-uv sync --locked --extra dev
+uv sync --locked --extra dev --python 3.12
 uv run uvicorn sensor_analytics.api:app --host 127.0.0.1 --port 8000
 ```
 
