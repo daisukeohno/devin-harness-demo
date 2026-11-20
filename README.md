@@ -17,6 +17,7 @@ Devin の「ハーネス」— Knowledge / Skills / REVIEW.md / Playbook / Bluep
 | Playbook 候補 | `playbooks/*.md` | Web アプリの Playbooks に登録し、セッション開始時に添付する |
 | 環境 Blueprint | `blueprint.yaml` | Devin の Environment 設定に貼り付ける（このファイル自体は参考値） |
 | デモ台本 | `docs/demo-script-ja.md` | 15分でひと通り見せる手順 |
+| Devin Oncall デモ | [日本語台本](docs/oncall-demo-ja.md) | 模擬監視アラートから Slack で原因調査と復旧確認 |
 
 ## ローカルでの動かし方
 
