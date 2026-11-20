@@ -1,4 +1,4 @@
-"""Tunable parameters for the analysis pipeline.
+"""Tunable parameters for the analysis pipeline and demo probe.
 
 Keep every threshold, window width and limit here so reviewers can see
 behaviour changes in one place.
@@ -27,3 +27,4 @@ class AnalysisConfig:
 DEFAULT_CONFIG = AnalysisConfig()
 
 MAX_FFILL_STEPS = DEFAULT_CONFIG.max_ffill_steps
+DEMO_PROBE_TIMEOUT_SECONDS = 3

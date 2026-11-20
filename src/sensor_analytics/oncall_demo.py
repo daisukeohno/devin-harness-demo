@@ -7,12 +7,14 @@ import sys
 from datetime import datetime, timezone
 from http.client import HTTPConnection, HTTPException
 
+from sensor_analytics.config import DEMO_PROBE_TIMEOUT_SECONDS
+
 ALERT_MARKER = "[ONCALL-DEMO-SENSOR]"
 MONITOR_PATHS = {"drift": "/ready", "healthy": "/health"}
 
 
 def status_for(port: int, path: str) -> int:
-    connection = HTTPConnection("127.0.0.1", port, timeout=3)
+    connection = HTTPConnection("127.0.0.1", port, timeout=DEMO_PROBE_TIMEOUT_SECONDS)
     try:
         connection.request("GET", path)
         with connection.getresponse() as response:
